@@ -1,0 +1,59 @@
+{
+    "workbench.colorTheme": "Default Dark Modern",
+    "editor.inlineSuggest.enabled": true,
+    "terminal.integrated.allowChords": false,
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.minimap.enabled": false,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "hediet.vscode-drawio.resizeImages": null,
+    "editor.tabSize": 2,
+    "editor.fontFamily": "Myrica M, Consolas, 'Courier New', monospace",
+    "editor.fontLigatures": false,
+    "terminal.integrated.fontFamily": "monospace",
+    "editor.renderWhitespace": "none",
+    "editor.fontSize": 15,
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": false,
+        "markdown": true,
+        "scminput": false
+    },
+    "remote.autoForwardPortsSource": "hybrid",
+    "accessibility.voice.keywordActivation": "chatInView",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "github.copilot.editor.enableAutoCompletions": true,
+    "editor.inlineSuggest.showToolbar": "always",
+    "git.confirmSync": false,
+    "gitlens.views.remotes.files.layout": "list",
+    "emmet.excludeLanguages": [
+        "markdown",
+        "php"
+    ],
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "chat.mcp.discovery.enabled": true,
+    "mcp": {
+    "servers": {
+        "Figma Dev Mode MCP": {
+        "type": "sse",
+        "url": "http://127.0.0.1:3845/sse"
+        }
+    }
+    },
+    "chat.agent.enabled": true,
+    "dev.containers.defaultExtensions": [
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github"
+    ],
+    "githubIssues.issueBranchTitle": "kawamura/",
+    "githubIssues.useBranchForIssues": "prompt",
+    "terminal.integrated.sendKeybindingsToShell": true,
+    "auto-rename-tag.activationOnLanguage": [
+        "*"
+    ]
+}
