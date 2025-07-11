@@ -11,6 +11,7 @@ for script in "$DOTFILES_DIR/.bin"/*; do
     if [[ -f "$script" ]]; then
         script_name=$(basename "$script")
         ln -sf "$script" "$LOCAL_BIN/$script_name"
+        chmod +x "$LOCAL_BIN/$script_name"
         echo "Linked: $script_name"
     fi
 done
@@ -28,4 +29,4 @@ add_to_path ~/.bashrc
 add_to_path ~/.zshrc
 
 echo "Setup completed!"
-echo "Run: source ~/.bashrc (or restart your shell)"
+echo -e "Run: \e[1;36m source ~/.bashrc \e[m (or restart your shell)"
