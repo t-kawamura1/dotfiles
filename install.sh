@@ -24,28 +24,26 @@ link_to_homedir() {
   # この方法は、スクリプトがどのディレクトリから実行されても、正しいパスを取得するために使用される
   # pwd -P はシンボリックリンクを解決して、実際のパスを取得
   # これにより、スクリプトがどのディレクトリから実行されても、正しいパスを取得できる
-  local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+  local this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 
-  # dirname コマンドを使用して、スクリプトのディレクトリの親ディレクトリを取得
-  local dotdir=$(dirname ${script_dir})
-  
-  # dotdir がホームディレクトリと異なる場合のみ、シンボリックリンクを作成
+  # this_script_dir がホームディレクトリと異なる場合のみ、シンボリックリンクを作成
   # これは同じディレクトリ内でシンボリックリンクを作成してしまう事故を防ぐため
-  if [[ "$HOME" != "$dotdir" ]];then
-    # /.??* ドットで始まる（ドットを含めた）3文字以上のファイル名・ディレクリ名にマッチ
-    for file in $dotdir/.??*; do
+  if [[ "$HOME" != "$this_script_dir" ]];then
+    # /.??* ドットで始まる（ドットを含めた）3文字以上のファイル・ディレクトリ名にマッチ
+    for item in $this_script_dir/.??*; do
       # .git ディレクトリはスキップ
-      [[ `basename $file` == ".git" ]] && continue
+      [[ `basename $item` == ".git" ]] && continue
+      echo "Processing $item ..."
       #  ホームディレクトリに既存のシンボリックリンクがあれば削除
-      if [[ -L "$HOME/`basename $file`" ]];then
-        command rm -f "$HOME/`basename $file`"
+      if [[ -L "$HOME/`basename $item`" ]];then
+        command rm -f "$HOME/`basename $item`"
       fi
       # ホームディレクトリに同名のファイル・ディレクトリが存在する場合はバックアップディレクトリに移動
-      if [[ -e "$HOME/`basename $file`" ]];then
-        command mv "$HOME/`basename $file`" "$HOME/.dotbackup"
+      if [[ -e "$HOME/`basename $item`" ]];then
+        command mv "$HOME/`basename $item`" "$HOME/.dotbackup"
       fi
       # シンボリックリンクをホームディレクトリに作成
-      command ln -snf $file $HOME
+      command ln -snf $item $HOME
     done
   else
     command echo "same install src dest"
