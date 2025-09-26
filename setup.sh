@@ -6,7 +6,7 @@ LOCAL_BIN="$HOME/.local/bin"
 # ~/.local/bin ディレクトリを作成
 mkdir -p "$LOCAL_BIN"
 
-# binディレクトリ内のすべてのスクリプトをリンク
+# .binディレクトリ内のすべてのスクリプトをリンク
 for script in "$DOTFILES_DIR/.bin"/*; do
     if [[ -f "$script" ]]; then
         script_name=$(basename "$script")
