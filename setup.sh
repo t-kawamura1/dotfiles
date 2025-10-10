@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# dotfilesの一部として管理されているカスタムスクリプトを、
+# システム全体で使えるコマンドとしてセットアップするスクリプト
 
 DOTFILES_DIR="$HOME/dotfiles"
 LOCAL_BIN="$HOME/.local/bin"
