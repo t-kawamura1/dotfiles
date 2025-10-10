@@ -19,17 +19,5 @@ for script in "$DOTFILES_DIR/.bin"/*; do
   fi
 done
 
-# PATHの設定
-add_to_path() {
-  local shell_rc="$1"
-  if [[ -f "$shell_rc" ]] && ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' "$shell_rc"; then
-    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$shell_rc"
-    echo "Added PATH to $shell_rc"
-  fi
-}
-
-add_to_path ~/.bashrc
-add_to_path ~/.zshrc
-
 echo "Setup completed!"
 echo -e "Run: \e[1;36m source ~/.bashrc \e[m (or restart your shell)"

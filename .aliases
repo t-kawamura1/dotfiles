@@ -1,0 +1,93 @@
+# ~/.aliases - 共通エイリアス設定ファイル
+# このファイルは .bashrc や .zshrc から読み込まれます
+
+# ==============================================
+# 安全なファイル操作エイリアス
+# ==============================================
+
+# 基本的な確認付きコマンド
+alias rm='rm -i'        # 削除前に確認
+alias mv='mv -i'        # 移動・リネーム前に確認
+alias cp='cp -i'        # 上書き前に確認
+
+# 明示的な確認付きエイリアス
+alias rmi='rm -i'       # 削除前に確認
+alias mvi='mv -i'       # 移動前に確認
+alias cpi='cp -i'       # コピー前に確認
+
+# 再帰操作 + 確認
+alias rmr='rm -ri'      # 再帰削除 + 確認
+alias cpr='cp -ri'      # 再帰コピー + 確認
+
+# バックアップ作成機能付き
+alias cpb='cp -b'       # バックアップ作成しながらコピー
+alias mvb='mv -b'       # バックアップ作成しながら移動
+
+# 詳細表示機能付き
+alias rmv='rm -v'       # 削除したファイルを表示
+alias mvv='mv -v'       # 移動したファイルを表示
+alias cpv='cp -v'       # コピーしたファイルを表示
+
+# 最も安全なオプション (確認 + 詳細表示)
+alias rmsafe='rm -iv'   # 確認 + 詳細表示
+alias mvsafe='mv -iv'   # 確認 + 詳細表示
+alias cpsafe='cp -iv'   # 確認 + 詳細表示
+
+# システム本来のコマンドを使用 (エイリアスを回避)
+alias sysrm='command rm'    # システムの rm
+alias sysmv='command mv'    # システムの mv
+alias syscp='command cp'    # システムの cp
+
+# ==============================================
+# 便利なエイリアス
+# ==============================================
+
+# ファイル一覧
+alias ll='ls -alF'      # 詳細一覧
+alias la='ls -A'        # 隠しファイル含む
+alias l='ls -CF'        # コンパクト表示
+alias ls='ls --color=auto'
+
+# grep関連
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# ディレクトリ移動
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+
+# Git関連
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline'
+alias gd='git diff'
+
+# その他
+alias h='history'
+alias c='clear'
+alias e='echo'
+alias md='mkdir -p'
+alias rd='rmdir'
+
+# ==============================================
+# 安全性に関する注意事項
+# ==============================================
+# 
+# 1. エイリアスを無効にしたい場合:
+#    - command rm file.txt
+#    - \rm file.txt
+#    - /bin/rm file.txt
+#
+# 2. 一時的にエイリアスを無効にしたい場合:
+#    - unalias rm
+#    - alias rm='command rm'
+#
+# 3. 現在のエイリアス一覧を確認:
+#    - alias
+#    - alias | grep rm
+#
