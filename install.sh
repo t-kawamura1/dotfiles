@@ -77,5 +77,11 @@ link_to_homedir
 # Gitの設定を実行元の環境でも共有
 # git config --global include.path "~/.gitconfig_shared"
 
+# VSCode拡張機能のインストール
+if command -v code &> /dev/null; then
+  echo "Installing VSCode extensions..."
+  bash ~/dotfiles/install-vscode-extensions.sh
+fi
+
 # 太字のシアン色で Install completed!!!! を表示
 command echo -e "\e[1;36m Install completed!!!! \e[m"
