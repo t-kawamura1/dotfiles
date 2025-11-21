@@ -34,8 +34,8 @@ setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 
 # カラー設定
-autoload -Uz colors
-colors
+autoload -Uz colors && colors
 
 # プロンプトのカスタマイズ
+setopt PROMPT_SUBST
 PROMPT='%{$fg[green]%}%n@%m%{$reset_color%}:%{$fg[blue]%}%~%{$reset_color%}$ '
