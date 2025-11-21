@@ -84,4 +84,4 @@ if command -v code &> /dev/null; then
 fi
 
 # 太字のシアン色で Install completed!!!! を表示
-command echo -e "\e[1;36m Install completed!!!! \e[m"
+printf "\033[1;36m Install completed!!!! \033[0m\n"
