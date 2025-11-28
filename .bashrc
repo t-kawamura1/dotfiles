@@ -119,8 +119,20 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# PATH に ~/.local/bin を追加
-export PATH="$HOME/.local/bin:$PATH"
+# PATH重複チェック関数
+add_to_path_once() {
+    if [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$1:$PATH"
+    fi
+}
+
+# PATH重複を除去する関数
+clean_path() {
+    export PATH=$(echo "$PATH" | tr ':' '\n' | awk '!seen[$0]++' | tr '\n' ':' | sed 's/:$//')
+}
+
+# PATH に ~/.local/bin を追加（重複チェック付き）
+add_to_path_once "$HOME/.local/bin"
 
 # NVM (Node Version Manager) の設定
 export NVM_DIR="$HOME/.nvm"
