@@ -134,6 +134,9 @@ clean_path() {
 # PATH に ~/.local/bin を追加（重複チェック付き）
 add_to_path_once "$HOME/.local/bin"
 
+# mise の初期化
+eval "$(mise activate bash)"
+
 # NVM (Node Version Manager) の設定
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # nvmを読み込み

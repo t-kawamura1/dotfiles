@@ -20,6 +20,9 @@ clean_path() {
 # PATH に ~/.local/bin を追加（重複チェック付き）
 add_to_path_once "$HOME/.local/bin"
 
+# mise の初期化
+eval "$(mise activate zsh)"
+
 # Zsh固有の設定
 autoload -Uz compinit
 compinit
