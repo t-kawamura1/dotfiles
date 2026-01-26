@@ -1,3 +1,5 @@
 .dotbackup
 .vscode/extensions
 .vscode/argv.json
+.claude/*
+!.claude/settings.local.json

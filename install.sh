@@ -31,8 +31,9 @@ link_to_homedir() {
   if [[ "$HOME" != "$this_script_dir" ]];then
     # /.??* ドットで始まる（ドットを含めた）3文字以上のファイル・ディレクトリ名にマッチ
     for item in $this_script_dir/.??*; do
-      # .git ディレクトリはスキップ
+      # .git と .config ディレクトリはスキップ（.configは後で個別処理）
       [[ `basename $item` == ".git" ]] && continue
+      [[ `basename $item` == ".config" ]] && continue
       echo "Processing $item ..."
       #  ホームディレクトリに既存のシンボリックリンクがあれば削除
       if [[ -L "$HOME/`basename $item`" ]];then
@@ -47,6 +48,39 @@ link_to_homedir() {
     done
   else
     command echo "same install src dest"
+  fi
+}
+
+link_config_directories() {
+  local this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+
+  # ~/.config ディレクトリが存在しない場合は作成
+  if [ ! -d "$HOME/.config" ]; then
+    command mkdir -p "$HOME/.config"
+  fi
+
+  # .config 内のサブディレクトリを個別にリンク
+  if [ -d "$this_script_dir/.config" ]; then
+    for item in $this_script_dir/.config/*; do
+      if [ -e "$item" ]; then
+        local item_name=`basename $item`
+        echo "Processing .config/$item_name ..."
+
+        # 既存のシンボリックリンクがあれば削除
+        if [[ -L "$HOME/.config/$item_name" ]]; then
+          command rm -f "$HOME/.config/$item_name"
+        fi
+
+        # 既存のファイル・ディレクトリがある場合はバックアップ
+        if [[ -e "$HOME/.config/$item_name" ]]; then
+          command mkdir -p "$HOME/.dotbackup/.config"
+          command mv "$HOME/.config/$item_name" "$HOME/.dotbackup/.config/"
+        fi
+
+        # シンボリックリンクを作成
+        command ln -snf "$item" "$HOME/.config/$item_name"
+      fi
+    done
   fi
 }
 
@@ -73,6 +107,7 @@ while [ $# -gt 0 ];do
 done
 
 link_to_homedir
+link_config_directories
 
 # Gitの設定を実行元の環境でも共有
 # git config --global include.path "~/.gitconfig_shared"
