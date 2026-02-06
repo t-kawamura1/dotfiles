@@ -137,8 +137,8 @@ add_to_path_once "$HOME/.local/bin"
 # mise の初期化
 eval "$(mise activate bash)"
 
-# NVM (Node Version Manager) の設定
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # nvmを読み込み
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # nvmのbash補完を読み込み
+# NVM (Node Version Manager) の設定 - miseを使うため無効化
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # nvmを読み込み
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # nvmのbash補完を読み込み
 # 目的: Node Version Manager(NVM)の初期化とコマンド補完機能を有効化
