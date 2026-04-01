@@ -142,3 +142,14 @@ eval "$(mise activate bash)"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # nvmを読み込み
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # nvmのbash補完を読み込み
 # 目的: Node Version Manager(NVM)の初期化とコマンド補完機能を有効化
+
+
+source ~/.safe-chain/scripts/init-posix.sh # Safe-chain bash initialization script
+
+# pnpm
+export PNPM_HOME="/home/tk/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
