@@ -125,7 +125,34 @@ update_git() {
   echo "git updated: $(git --version)"
 }
 
+install_mise() {
+  if command -v mise >/dev/null 2>&1; then
+    echo "mise is already installed: $(mise --version)"
+    return
+  fi
+
+  echo "Installing mise..."
+  if command -v curl >/dev/null 2>&1; then
+    curl https://mise.run | sh || return 1
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO- https://mise.run | sh || return 1
+  else
+    echo "Neither curl nor wget is available. Please install one of them and rerun install.sh." >&2
+    return 1
+  fi
+
+  # Verify mise was installed to ~/.local/bin/mise
+  if [ ! -f "$HOME/.local/bin/mise" ]; then
+    echo "mise installation failed - $HOME/.local/bin/mise was not created." >&2
+    return 1
+  fi
+
+  # mise activation requires shell re-sourcing; just verify file exists
+  echo "mise installed successfully to $HOME/.local/bin/mise"
+}
+
 update_git
+install_mise
 link_to_homedir
 link_config_directories
 
