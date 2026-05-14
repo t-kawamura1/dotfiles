@@ -3,3 +3,6 @@
 	email = tkawamura.stayhome@gmail.com
 [credential]
 	helper = store
+[hook "gitleaks"]
+	command = "gitleaks git --pre-commit --staged"
+	event = "pre-commit"

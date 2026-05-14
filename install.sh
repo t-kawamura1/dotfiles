@@ -106,6 +106,26 @@ while [ $# -gt 0 ];do
   shift
 done
 
+# .gitconfig の [hook "gitleaks"] は新しめのGit機能に依存するため、
+# インストール時にGitを最新化して実行互換性を確保する。
+update_git() {
+  if command -v apt-get >/dev/null 2>&1; then
+    echo "Updating git to latest version via git-core PPA..."
+    sudo add-apt-repository -y ppa:git-core/ppa
+    sudo apt-get update -q
+    sudo apt-get install -y git
+  elif command -v brew >/dev/null 2>&1; then
+    echo "Updating git to latest version via Homebrew..."
+    brew install git || brew upgrade git
+  else
+    echo "No supported package manager found. Skipping git update."
+    return
+  fi
+
+  echo "git updated: $(git --version)"
+}
+
+update_git
 link_to_homedir
 link_config_directories
 

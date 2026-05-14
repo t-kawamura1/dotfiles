@@ -20,4 +20,9 @@ for script in "$DOTFILES_DIR/.bin"/*; do
 done
 
 echo "Setup completed!"
+
+# gitleaks のインストール
+echo "Installing gitleaks..."
+"$LOCAL_BIN/install-gitleaks"
+
 echo -e "Run: \e[1;36m source ~/.bashrc \e[m (or restart your shell)"

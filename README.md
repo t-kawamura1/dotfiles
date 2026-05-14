@@ -20,7 +20,8 @@
 ├── .bashrc                      # Bash設定ファイル
 ├── .zshrc                       # Zsh設定ファイル
 ├── .bin/                        # カスタムスクリプト格納ディレクトリ
-│   └── mkfile                   # ファイル作成スクリプト（例）
+│   ├── mkfile                   # ファイル作成スクリプト（例）
+│   └── install-gitleaks         # gitleaksを ~/.local/bin にインストール
 ├── .config/                     # アプリケーション設定ディレクトリ
 │   └── mise/                    # mise設定
 │       └── config.toml          # miseグローバル設定
@@ -46,6 +47,7 @@ cd ~/dotfiles
 ```
 
 このスクリプトは以下を実行します：
+- 環境に応じてGitを最新化（apt / Homebrew）
 - 既存のdotfilesを`~/.dotbackup`にバックアップ
 - dotfilesをホームディレクトリにシンボリックリンクとして配置
 - VSCodeがインストールされている場合、自動的に拡張機能をインストール
@@ -59,6 +61,7 @@ cd ~/dotfiles
 このスクリプトは以下を実行します：
 - `.bin`ディレクトリ内のスクリプトを`~/.local/bin`にリンク
 - スクリプトに実行権限を付与
+- `install-gitleaks` を実行して `~/.local/bin/gitleaks` をインストール（バージョン固定＋チェックサム検証）
 
 ### 4. 設定の反映
 
