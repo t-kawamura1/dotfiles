@@ -9,5 +9,19 @@
     "feature-dev@claude-plugins-official": true,
     "Notion@claude-plugins-official": true
   },
-  "language": "関西弁"
+  "language": "関西弁",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -Command \"Add-Type -AssemblyName System.Windows.Forms; \\$notify = New-Object System.Windows.Forms.NotifyIcon; \\$notify.Icon = [System.Drawing.SystemIcons]::Information; \\$notify.Visible = \\$true; \\$notify.ShowBalloonTip(5000, 'Claude Code', '作業完了！', [System.Windows.Forms.ToolTipIcon]::Info); Start-Sleep -Seconds 3\"",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
 }
