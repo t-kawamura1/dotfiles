@@ -31,9 +31,10 @@ link_to_homedir() {
   if [[ "$HOME" != "$this_script_dir" ]];then
     # /.??* ドットで始まる（ドットを含めた）3文字以上のファイル・ディレクトリ名にマッチ
     for item in $this_script_dir/.??*; do
-      # .git と .config ディレクトリはスキップ（.configは後で個別処理）
+      # .git と .config はスキップ（.configは後で個別処理）、.claude はスキップ（link_claude_filesで個別処理）
       [[ `basename $item` == ".git" ]] && continue
       [[ `basename $item` == ".config" ]] && continue
+      [[ `basename $item` == ".claude" ]] && continue
       echo "Processing $item ..."
       #  ホームディレクトリに既存のシンボリックリンクがあれば削除
       if [[ -L "$HOME/`basename $item`" ]];then
@@ -49,6 +50,33 @@ link_to_homedir() {
   else
     command echo "same install src dest"
   fi
+}
+
+link_claude_files() {
+  local this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+  local claude_src="$this_script_dir/claude"
+  local claude_dest="$HOME/.claude"
+
+  if [ ! -d "$claude_src" ]; then
+    return
+  fi
+
+  mkdir -p "$claude_dest"
+
+  for item in "$claude_src"/*; do
+    [ -e "$item" ] || continue
+    local item_name
+    item_name=$(basename "$item")
+    echo "Processing claude/$item_name ..."
+
+    if [[ -L "$claude_dest/$item_name" ]]; then
+      command rm -f "$claude_dest/$item_name"
+    elif [[ -e "$claude_dest/$item_name" ]]; then
+      command mv "$claude_dest/$item_name" "$HOME/.dotbackup/"
+    fi
+
+    command ln -snf "$item" "$claude_dest/$item_name"
+  done
 }
 
 link_config_directories() {
@@ -155,6 +183,7 @@ update_git
 install_mise
 link_to_homedir
 link_config_directories
+link_claude_files
 
 # Gitの設定を実行元の環境でも共有
 # git config --global include.path "~/.gitconfig_shared"
