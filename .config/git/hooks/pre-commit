@@ -1,0 +1,29 @@
+#!/bin/sh
+
+workflow_files=$(git diff --cached --name-only | grep '^\.github/workflows/.*\.yml$')
+
+if [ -n "$workflow_files" ]; then
+  if ! command -v actionlint >/dev/null 2>&1; then
+    echo "warning: actionlint not found, skipping workflow lint" >&2
+  else
+    echo "Running actionlint..." >&2
+    # shellcheck disable=SC2086
+    actionlint $workflow_files || exit 1
+  fi
+
+  if ! command -v ghalint >/dev/null 2>&1; then
+    echo "warning: ghalint not found, skipping ghalint" >&2
+  else
+    echo "Running ghalint..." >&2
+    ghalint_output=$(ghalint run 2>&1)
+    ghalint_exit=$?
+    if [ -n "$ghalint_output" ]; then
+      echo "$ghalint_output" | sed 's/\x1b\[[0-9;]*m//g' | gawk -f "$HOME/dotfiles/scripts/ghalint-fmt.awk"
+    fi
+    [ $ghalint_exit -eq 0 ] || exit 1
+  fi
+fi
+
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks git --pre-commit --staged
+fi

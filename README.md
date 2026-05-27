@@ -7,7 +7,7 @@
 このdotfilesリポジトリは以下の機能を提供します：
 
 - **安全なファイル操作**: `rm`、`mv`、`cp`コマンドに確認オプションを自動追加
-- **カスタムスクリプト管理**: `.bin`ディレクトリ内のスクリプトをシステム全体で利用可能に
+- **カスタムスクリプト管理**: `.local/bin`ディレクトリ内のスクリプトをシステム全体で利用可能に
 - **VSCode拡張機能の自動インストール**: 開発に必要な拡張機能を一括インストール
 - **シェル環境の最適化**: 履歴管理、プロンプト設定、補完機能の強化
 - **ツールバージョン管理**: miseによる開発ツールのバージョン管理設定
@@ -17,18 +17,27 @@
 ```
 .
 ├── .aliases                      # 共通エイリアス定義
-├── .bashrc                      # Bash設定ファイル
-├── .zshrc                       # Zsh設定ファイル
-├── .bin/                        # カスタムスクリプト格納ディレクトリ
-│   ├── mkfile                   # ファイル作成スクリプト（例）
-│   └── install-gitleaks         # gitleaksを ~/.local/bin にインストール
-├── .config/                     # アプリケーション設定ディレクトリ
-│   └── mise/                    # mise設定
-│       └── config.toml          # miseグローバル設定
-├── install.sh                   # dotfilesインストールスクリプト
-├── setup.sh                     # カスタムスクリプトセットアップ
-├── install-vscode-extensions.sh # VSCode拡張機能インストールスクリプト
-└── README.md                    # このファイル
+├── .bashrc                       # Bash設定ファイル
+├── .zshrc                        # Zsh設定ファイル
+├── .config/                      # アプリケーション設定ディレクトリ
+│   ├── git/                      # Git設定（XDGパス）
+│   │   ├── config                # Git設定ファイル（~/.gitconfig相当）
+│   │   ├── ignore                # グローバルgitignore（~/.gitignore相当）
+│   │   └── hooks/
+│   │       └── pre-commit        # pre-commitフック（actionlint/ghalint/gitleaks）
+│   └── mise/                     # mise設定
+│       └── config.toml           # miseグローバル設定（actionlint/ghalint/gitleaks/node/pnpm）
+├── .local/
+│   └── bin/                      # カスタムスクリプト格納ディレクトリ
+│       └── mkfile                # ファイル作成スクリプト（例）
+├── scripts/
+│   └── ghalint-fmt.awk           # ghalint出力整形スクリプト
+├── claude/                       # Claude Code設定
+│   ├── CLAUDE.md
+│   └── settings.json
+├── install.sh                    # dotfilesインストールスクリプト
+├── install-vscode-extensions.sh  # VSCode拡張機能インストールスクリプト
+└── README.md                     # このファイル
 ```
 
 ## 🚀 クイックスタート
@@ -47,24 +56,17 @@ cd ~/dotfiles
 ```
 
 このスクリプトは以下を実行します：
+
 - 環境に応じてGitを最新化（apt / Homebrew）
 - `mise` が未インストールの場合は自動インストール
-- 既存のdotfilesを`~/.dotbackup`にバックアップ
+- 既存のdotfilesを `~/.dotbackup` にバックアップ
 - dotfilesをホームディレクトリにシンボリックリンクとして配置
+  - `.config/` 配下は `~/.config/` 配下にサブディレクトリ単位でリンク
+  - `.local/bin/` 配下は `~/.local/bin/` 配下にファイル単位でリンク
+  - `claude/` 配下は `~/.claude/` 配下にリンク
 - VSCodeがインストールされている場合、自動的に拡張機能をインストール
 
-### 3. カスタムスクリプトのセットアップ
-
-```bash
-./setup.sh
-```
-
-このスクリプトは以下を実行します：
-- `.bin`ディレクトリ内のスクリプトを`~/.local/bin`にリンク
-- スクリプトに実行権限を付与
-- `install-gitleaks` を実行して `~/.local/bin/gitleaks` をインストール（バージョン固定＋チェックサム検証）
-
-### 4. 設定の反映
+### 3. 設定の反映
 
 ```bash
 source ~/.bashrc
@@ -107,6 +109,5 @@ alias | grep rm
 cd ~/dotfiles
 git pull origin main
 ./install.sh
-./setup.sh
 source ~/.bashrc
 ```

@@ -52,6 +52,29 @@ link_to_homedir() {
   fi
 }
 
+link_local_bin() {
+  local this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+
+  mkdir -p "$HOME/.local/bin"
+
+  if [ -d "$this_script_dir/.local/bin" ]; then
+    for item in "$this_script_dir/.local/bin/"*; do
+      [ -e "$item" ] || continue
+      local item_name
+      item_name=$(basename "$item")
+      echo "Processing .local/bin/$item_name ..."
+
+      if [[ -L "$HOME/.local/bin/$item_name" ]]; then
+        command rm -f "$HOME/.local/bin/$item_name"
+      elif [[ -e "$HOME/.local/bin/$item_name" ]]; then
+        command mv "$HOME/.local/bin/$item_name" "$HOME/.dotbackup/"
+      fi
+
+      command ln -snf "$item" "$HOME/.local/bin/$item_name"
+    done
+  fi
+}
+
 link_claude_files() {
   local this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
   local claude_src="$this_script_dir/claude"
@@ -134,8 +157,6 @@ while [ $# -gt 0 ];do
   shift
 done
 
-# .gitconfig の [hook "gitleaks"] は新しめのGit機能に依存するため、
-# インストール時にGitを最新化して実行互換性を確保する。
 update_git() {
   if command -v apt-get >/dev/null 2>&1; then
     echo "Updating git to latest version via git-core PPA..."
@@ -183,6 +204,7 @@ update_git
 install_mise
 link_to_homedir
 link_config_directories
+link_local_bin
 link_claude_files
 
 # Gitの設定を実行元の環境でも共有
