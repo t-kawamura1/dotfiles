@@ -1,10 +1,14 @@
 #!/bin/sh
 
+# mise管理ツール（actionlint/ghalint/gitleaks）をPATHに追加
+# git hookはシェルを新規起動するためmise activateが効かないので明示的に追加する
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 
+# ステージングされたGitHub Actionsワークフローファイルを取得
 workflow_files=$(git diff --cached --name-only | grep '^\.github/workflows/.*\.yml$')
 
 if [ -n "$workflow_files" ]; then
+  # actionlint: ワークフローファイルの構文・ロジックを静的解析
   if ! command -v actionlint >/dev/null 2>&1; then
     echo "warning: actionlint not found, skipping workflow lint" >&2
   else
@@ -13,10 +17,12 @@ if [ -n "$workflow_files" ]; then
     actionlint $workflow_files || exit 1
   fi
 
+  # ghalint: GitHub Actionsのセキュリティ・ベストプラクティスをチェック
   if ! command -v ghalint >/dev/null 2>&1; then
     echo "warning: ghalint not found, skipping ghalint" >&2
   else
     echo "Running ghalint..." >&2
+    # ANSIエスケープを除去してawkで整形出力（出力がない場合はスキップ）
     ghalint_output=$(ghalint run 2>&1)
     ghalint_exit=$?
     if [ -n "$ghalint_output" ]; then
@@ -26,6 +32,7 @@ if [ -n "$workflow_files" ]; then
   fi
 fi
 
+# gitleaks: シークレット・認証情報の漏洩をステージング済み差分に対してスキャン
 if command -v gitleaks >/dev/null 2>&1; then
   gitleaks git --pre-commit --staged
 fi
