@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+
 workflow_files=$(git diff --cached --name-only | grep '^\.github/workflows/.*\.yml$')
 
 if [ -n "$workflow_files" ]; then
