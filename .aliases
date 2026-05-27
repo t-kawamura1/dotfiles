@@ -78,8 +78,8 @@ alias rd='rmdir'
 # ツール関連
 # ==============================================
 
-# ghalint の出力を整形
-alias ghalint-fmt="ghalint run 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | gawk -f \$HOME/dotfiles/scripts/ghalint-fmt.awk"
+# zizmor のデフォルトペルソナを auditor に設定
+alias zizmor="zizmor --persona auditor"
 
 # ==============================================
 # 安全性に関する注意事項

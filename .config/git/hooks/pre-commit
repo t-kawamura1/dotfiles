@@ -23,7 +23,7 @@ if [ -n "$workflow_files" ]; then
   else
     echo "Running zizmor..." >&2
     # shellcheck disable=SC2086
-    zizmor $workflow_files || exit 1
+    zizmor --persona auditor $workflow_files || exit 1
   fi
 fi
 
