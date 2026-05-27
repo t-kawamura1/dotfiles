@@ -24,14 +24,12 @@
 │   │   ├── config                # Git設定ファイル（~/.gitconfig相当）
 │   │   ├── ignore                # グローバルgitignore（~/.gitignore相当）
 │   │   └── hooks/
-│   │       └── pre-commit        # pre-commitフック（actionlint/ghalint/gitleaks）
+│   │       └── pre-commit        # pre-commitフック（actionlint/zizmor/gitleaks）
 │   └── mise/                     # mise設定
-│       └── config.toml           # miseグローバル設定（actionlint/ghalint/gitleaks/node/pnpm）
+│       └── config.toml           # miseグローバル設定（actionlint/zizmor/gitleaks/node/pnpm）
 ├── .local/
 │   └── bin/                      # カスタムスクリプト格納ディレクトリ
 │       └── mkfile                # ファイル作成スクリプト（例）
-├── scripts/
-│   └── ghalint-fmt.awk           # ghalint出力整形スクリプト
 ├── claude/                       # Claude Code設定
 │   ├── CLAUDE.md
 │   └── settings.json
