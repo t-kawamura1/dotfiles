@@ -3,7 +3,7 @@ idiomatic_version_file_enable_tools = ["node"]
 
 [tools]
 actionlint = "latest"
-ghalint = "latest"
 gitleaks = "latest"
 node = "lts"
 pnpm = "latest"
+zizmor = "latest"

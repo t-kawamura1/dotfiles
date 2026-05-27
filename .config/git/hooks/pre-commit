@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# mise管理ツール（actionlint/ghalint/gitleaks）をPATHに追加
+# mise管理ツール（actionlint/zizmor/gitleaks）をPATHに追加
 # git hookはシェルを新規起動するためmise activateが効かないので明示的に追加する
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 
@@ -17,18 +17,13 @@ if [ -n "$workflow_files" ]; then
     actionlint $workflow_files || exit 1
   fi
 
-  # ghalint: GitHub Actionsのセキュリティ・ベストプラクティスをチェック
-  if ! command -v ghalint >/dev/null 2>&1; then
-    echo "warning: ghalint not found, skipping ghalint" >&2
+  # zizmor: GitHub Actionsのセキュリティ脆弱性を静的解析
+  if ! command -v zizmor >/dev/null 2>&1; then
+    echo "warning: zizmor not found, skipping zizmor" >&2
   else
-    echo "Running ghalint..." >&2
-    # ANSIエスケープを除去してawkで整形出力（出力がない場合はスキップ）
-    ghalint_output=$(ghalint run 2>&1)
-    ghalint_exit=$?
-    if [ -n "$ghalint_output" ]; then
-      echo "$ghalint_output" | sed 's/\x1b\[[0-9;]*m//g' | gawk -f "$HOME/dotfiles/scripts/ghalint-fmt.awk"
-    fi
-    [ $ghalint_exit -eq 0 ] || exit 1
+    echo "Running zizmor..." >&2
+    # shellcheck disable=SC2086
+    zizmor $workflow_files || exit 1
   fi
 fi
 
