@@ -1,15 +1,4 @@
 {
-  "enabledPlugins": {
-    "commit-commands@claude-code-plugins": true,
-    "github@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
-    "security-guidance@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true,
-    "Notion@claude-plugins-official": true
-  },
-  "language": "関西弁",
   "hooks": {
     "Stop": [
       {
@@ -23,5 +12,17 @@
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "commit-commands@claude-code-plugins": true,
+    "github@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "Notion@claude-plugins-official": true,
+    "security-guidance@claude-code-plugins": true
+  },
+  "language": "関西弁"
 }
