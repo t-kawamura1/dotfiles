@@ -18,6 +18,8 @@
 .
 ├── .aliases                      # 共通エイリアス定義
 ├── .bashrc                       # Bash設定ファイル
+├── .gitignore                    # Gitの追跡除外設定
+├── .npmrc                        # npm設定ファイル
 ├── .zshrc                        # Zsh設定ファイル
 ├── .config/                      # アプリケーション設定ディレクトリ
 │   ├── git/                      # Git設定（XDGパス）
@@ -30,6 +32,8 @@
 ├── .local/
 │   └── bin/                      # カスタムスクリプト格納ディレクトリ
 │       └── mkfile                # ファイル作成スクリプト（例）
+├── .vscode/
+│   └── settings.json             # VSCode設定ファイル
 ├── claude/                       # Claude Code設定
 │   ├── CLAUDE.md
 │   └── settings.json
@@ -67,6 +71,12 @@ cd ~/dotfiles
 ### 3. 設定の反映
 
 ```bash
+# zshの場合
+source ~/.zshrc
+# または
+exec zsh
+
+# bashの場合
 source ~/.bashrc
 # または
 exec bash
@@ -107,5 +117,5 @@ alias | grep rm
 cd ~/dotfiles
 git pull origin main
 ./install.sh
-source ~/.bashrc
+source ~/.zshrc  # bashの場合は source ~/.bashrc
 ```

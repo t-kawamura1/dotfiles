@@ -3,6 +3,12 @@
 # エラーを検出し、スクリプトの実行を停止する
 set -ueo pipefail
 
+# dirname "${BASH_SOURCE[0]}" はスクリプトのパスからディレクトリ部分を取得し、
+# cd コマンドでそのディレクトリに移動し、pwd -P で絶対パスを取得
+# pwd -P はシンボリックリンクを解決して実際のパスを取得するため、
+# スクリプトがどのディレクトリから実行されても正しいパスを取得できる
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+
 helpmsg() {
   # $0 このスクリプト名を表す変数
   # >&2 標準入力を標準エラー出力へリダイレクト
@@ -18,23 +24,16 @@ link_to_homedir() {
     command mkdir "$HOME/.dotbackup"
   fi
 
-  # "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)" はスクリプトのディレクトリを取得するためのコマンド
-  # dirname "${BASH_SOURCE[0]}" はスクリプトのパスからディレクトリ部分を取得し、
-  # cd コマンドでそのディレクトリに移動し、pwd -P で絶対パスを取得
-  # この方法は、スクリプトがどのディレクトリから実行されても、正しいパスを取得するために使用される
-  # pwd -P はシンボリックリンクを解決して、実際のパスを取得
-  # これにより、スクリプトがどのディレクトリから実行されても、正しいパスを取得できる
-  local this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-
-  # this_script_dir がホームディレクトリと異なる場合のみ、シンボリックリンクを作成
+  # SCRIPT_DIR がホームディレクトリと異なる場合のみ、シンボリックリンクを作成
   # これは同じディレクトリ内でシンボリックリンクを作成してしまう事故を防ぐため
-  if [[ "$HOME" != "$this_script_dir" ]];then
+  if [[ "$HOME" != "$SCRIPT_DIR" ]];then
     # /.??* ドットで始まる（ドットを含めた）3文字以上のファイル・ディレクトリ名にマッチ
-    for item in $this_script_dir/.??*; do
-      # .git と .config はスキップ（.configは後で個別処理）、.claude はスキップ（link_claude_filesで個別処理）
+    for item in $SCRIPT_DIR/.??*; do
+      # .git と .config はスキップ（.configは後で個別処理）、.claude はスキップ（link_claude_filesで個別処理）、.local はスキップ（link_local_binで個別処理）
       [[ `basename $item` == ".git" ]] && continue
       [[ `basename $item` == ".config" ]] && continue
       [[ `basename $item` == ".claude" ]] && continue
+      [[ `basename $item` == ".local" ]] && continue
       echo "Processing $item ..."
       #  ホームディレクトリに既存のシンボリックリンクがあれば削除
       if [[ -L "$HOME/`basename $item`" ]];then
@@ -45,7 +44,7 @@ link_to_homedir() {
         command mv "$HOME/`basename $item`" "$HOME/.dotbackup"
       fi
       # シンボリックリンクをホームディレクトリに作成
-      command ln -snf $item $HOME
+      command ln -snf "$item" $HOME
     done
   else
     command echo "same install src dest"
@@ -53,12 +52,10 @@ link_to_homedir() {
 }
 
 link_local_bin() {
-  local this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-
   mkdir -p "$HOME/.local/bin"
 
-  if [ -d "$this_script_dir/.local/bin" ]; then
-    for item in "$this_script_dir/.local/bin/"*; do
+  if [ -d "$SCRIPT_DIR/.local/bin" ]; then
+    for item in "$SCRIPT_DIR/.local/bin/"*; do
       [ -e "$item" ] || continue
       local item_name
       item_name=$(basename "$item")
@@ -76,8 +73,7 @@ link_local_bin() {
 }
 
 link_claude_files() {
-  local this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-  local claude_src="$this_script_dir/claude"
+  local claude_src="$SCRIPT_DIR/claude"
   local claude_dest="$HOME/.claude"
 
   if [ ! -d "$claude_src" ]; then
@@ -103,16 +99,14 @@ link_claude_files() {
 }
 
 link_config_directories() {
-  local this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-
   # ~/.config ディレクトリが存在しない場合は作成
   if [ ! -d "$HOME/.config" ]; then
     command mkdir -p "$HOME/.config"
   fi
 
   # .config 内のサブディレクトリを個別にリンク
-  if [ -d "$this_script_dir/.config" ]; then
-    for item in $this_script_dir/.config/*; do
+  if [ -d "$SCRIPT_DIR/.config" ]; then
+    for item in $SCRIPT_DIR/.config/*; do
       if [ -e "$item" ]; then
         local item_name=`basename $item`
         echo "Processing .config/$item_name ..."
@@ -213,7 +207,7 @@ link_claude_files
 # VSCode拡張機能のインストール
 if command -v code &> /dev/null; then
   echo "Installing VSCode extensions..."
-  bash ~/dotfiles/install-vscode-extensions.sh
+  bash "$SCRIPT_DIR/install-vscode-extensions.sh"
 fi
 
 # 太字のシアン色で Install completed!!!! を表示
