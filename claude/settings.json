@@ -24,6 +24,6 @@
     "notion@claude-plugins-official": true
   },
   "language": "関西弁",
-  "theme": "dark",
-  "tui": "fullscreen"
+  "tui": "fullscreen",
+  "theme": "dark"
 }
