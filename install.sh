@@ -194,8 +194,32 @@ install_mise() {
   echo "mise installed successfully to $HOME/.local/bin/mise"
 }
 
+install_claude_code() {
+  if command -v claude >/dev/null 2>&1; then
+    echo "Claude Code is already installed: $(claude --version)"
+    return
+  fi
+
+  echo "Installing Claude Code..."
+  case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*)
+      # Windows (Git Bash / MSYS / Cygwin 経由)
+      echo "Detected Windows. Installing via PowerShell..."
+      powershell.exe -NoProfile -Command "irm https://claude.ai/install.ps1 | iex" || return 1
+      ;;
+    *)
+      # macOS / Linux (WSL含む)
+      echo "Detected macOS/Linux. Installing via curl..."
+      curl -fsSL https://claude.ai/install.sh | bash || return 1
+      ;;
+  esac
+
+  echo "Claude Code installed successfully"
+}
+
 update_git
 install_mise
+install_claude_code
 link_to_homedir
 link_config_directories
 link_local_bin
