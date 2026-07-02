@@ -23,5 +23,7 @@
     "feature-dev@claude-plugins-official": true,
     "notion@claude-plugins-official": true
   },
-  "language": "関西弁"
+  "language": "関西弁",
+  "theme": "dark",
+  "tui": "fullscreen"
 }

@@ -4,8 +4,7 @@
     "terminal.integrated.allowChords": false,
     "workbench.iconTheme": "material-icon-theme",
     "editor.minimap.enabled": false,
-    "typescript.updateImportsOnFileMove.enabled": "always",
-    "javascript.updateImportsOnFileMove.enabled": "always",
+    "js/ts.updateImportsOnFileMove.enabled": "always",
     "[html]": {
         "editor.defaultFormatter": "vscode.html-language-features"
     },

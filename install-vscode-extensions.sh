@@ -27,8 +27,9 @@ extensions=(
 )
 
 # 拡張機能をインストール
+# NODE_NO_WARNINGS=1: code CLI内部(Node.js)のurl.parse()非推奨警告を抑制する
 for extension in "${extensions[@]}"; do
-  code --install-extension "$extension" --force
+  NODE_NO_WARNINGS=1 code --install-extension "$extension" --force
 done
 
 echo "VSCode extensions installed successfully!"
