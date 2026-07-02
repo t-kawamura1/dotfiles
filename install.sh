@@ -217,9 +217,50 @@ install_claude_code() {
   echo "Claude Code installed successfully"
 }
 
+install_aws_cli() {
+  if command -v aws >/dev/null 2>&1; then
+    echo "AWS CLI is already installed: $(aws --version)"
+    return
+  fi
+
+  echo "Installing AWS CLI..."
+  case "$(uname -s)" in
+    Darwin*)
+      # macOS
+      echo "Detected macOS. Installing via pkg installer..."
+      local tmp_dir
+      tmp_dir="$(mktemp -d)"
+      local tmp_pkg="$tmp_dir/AWSCLIV2.pkg"
+      curl -fsSL "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "$tmp_pkg" || return 1
+      sudo installer -pkg "$tmp_pkg" -target / || return 1
+      rm -rf "$tmp_dir"
+      ;;
+    MINGW*|MSYS*|CYGWIN*)
+      # Windows (Git Bash / MSYS / Cygwin 経由)
+      echo "Detected Windows. Installing via PowerShell..."
+      powershell.exe -NoProfile -Command "Start-Process msiexec.exe -ArgumentList '/i https://awscli.amazonaws.com/AWSCLIV2.msi /qn' -Wait" || return 1
+      ;;
+    *)
+      # Linux (WSL含む)
+      echo "Detected Linux. Installing via zip installer..."
+      local tmp_dir
+      tmp_dir="$(mktemp -d)"
+      local arch
+      arch="$(uname -m)"
+      curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-${arch}.zip" -o "$tmp_dir/awscliv2.zip" || return 1
+      unzip -q "$tmp_dir/awscliv2.zip" -d "$tmp_dir" || return 1
+      sudo "$tmp_dir/aws/install" || return 1
+      rm -rf "$tmp_dir"
+      ;;
+  esac
+
+  echo "AWS CLI installed successfully"
+}
+
 update_git
 install_mise
 install_claude_code
+install_aws_cli
 link_to_homedir
 link_config_directories
 link_local_bin
