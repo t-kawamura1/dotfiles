@@ -151,6 +151,26 @@ while [ $# -gt 0 ];do
   shift
 done
 
+install_homebrew() {
+  if command -v brew >/dev/null 2>&1; then
+    echo "Homebrew is already installed: $(brew --version | head -n1)"
+    return
+  fi
+
+  case "$(uname -s)" in
+    Darwin*)
+      echo "Installing Homebrew..."
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || return 1
+      ;;
+    *)
+      echo "Homebrew install is only supported on macOS in this script. Skipping."
+      return
+      ;;
+  esac
+
+  echo "Homebrew installed successfully"
+}
+
 update_git() {
   if command -v apt-get >/dev/null 2>&1; then
     echo "Updating git to latest version via git-core PPA..."
@@ -325,6 +345,7 @@ install_github_cli() {
   echo "GitHub CLI installed successfully"
 }
 
+install_homebrew
 update_git
 install_mise
 install_claude_code
