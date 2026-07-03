@@ -257,10 +257,79 @@ install_aws_cli() {
   echo "AWS CLI installed successfully"
 }
 
+install_github_cli() {
+  if command -v gh >/dev/null 2>&1; then
+    echo "GitHub CLI is already installed: $(gh --version | head -n1)"
+    return
+  fi
+
+  echo "Installing GitHub CLI..."
+  case "$(uname -s)" in
+    Darwin*)
+      # macOS
+      echo "Detected macOS. Installing via pkg installer..."
+      local tmp_dir
+      tmp_dir="$(mktemp -d)"
+      local tmp_pkg="$tmp_dir/gh.pkg"
+      local pkg_url
+      pkg_url="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest | grep -o 'https://[^"]*\.pkg' | head -n1)"
+      if [ -z "$pkg_url" ]; then
+        echo "Could not determine latest GitHub CLI pkg URL." >&2
+        rm -rf "$tmp_dir"
+        return 1
+      fi
+      curl -fsSL "$pkg_url" -o "$tmp_pkg" || return 1
+      sudo installer -pkg "$tmp_pkg" -target / || return 1
+      rm -rf "$tmp_dir"
+      ;;
+    MINGW*|MSYS*|CYGWIN*)
+      # Windows (Git Bash / MSYS / Cygwin 経由)
+      echo "Detected Windows. Installing via winget..."
+      powershell.exe -NoProfile -Command "winget install --id GitHub.cli -e --source winget" || return 1
+      ;;
+    *)
+      # Linux (WSL含む)
+      if command -v apt-get >/dev/null 2>&1; then
+        echo "Detected Linux (apt). Installing via official apt repository..."
+        (type -p wget >/dev/null || sudo apt-get install -y wget) \
+          && sudo mkdir -p -m 755 /etc/apt/keyrings \
+          && wget -nv -O- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+          && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages/deb stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt-get update -q \
+          && sudo apt-get install -y gh || return 1
+      else
+        echo "Detected Linux. Installing via tarball..."
+        local tmp_dir
+        tmp_dir="$(mktemp -d)"
+        local arch
+        case "$(uname -m)" in
+          x86_64) arch="amd64" ;;
+          aarch64|arm64) arch="arm64" ;;
+          *) echo "Unsupported architecture: $(uname -m)" >&2; return 1 ;;
+        esac
+        local latest_url
+        latest_url="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest | grep -o "https://.*linux_${arch}\.tar\.gz" | head -n1)"
+        if [ -z "$latest_url" ]; then
+          echo "Could not determine latest GitHub CLI release URL." >&2
+          return 1
+        fi
+        curl -fsSL "$latest_url" -o "$tmp_dir/gh.tar.gz" || return 1
+        tar -xzf "$tmp_dir/gh.tar.gz" -C "$tmp_dir" || return 1
+        sudo install "$tmp_dir"/gh_*/bin/gh /usr/local/bin/gh || return 1
+        rm -rf "$tmp_dir"
+      fi
+      ;;
+  esac
+
+  echo "GitHub CLI installed successfully"
+}
+
 update_git
 install_mise
 install_claude_code
 install_aws_cli
+install_github_cli
 link_to_homedir
 link_config_directories
 link_local_bin
