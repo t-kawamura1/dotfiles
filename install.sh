@@ -345,12 +345,55 @@ install_github_cli() {
   echo "GitHub CLI installed successfully"
 }
 
+install_gcloud_cli() {
+  if command -v gcloud >/dev/null 2>&1; then
+    echo "Google Cloud SDK is already installed: $(gcloud --version | head -n1)"
+    return
+  fi
+
+  echo "Installing Google Cloud SDK..."
+  case "$(uname -s)" in
+    Darwin*)
+      # macOS
+      if command -v brew >/dev/null 2>&1; then
+        echo "Detected macOS. Installing via Homebrew..."
+        brew install --cask google-cloud-sdk || return 1
+      else
+        echo "Homebrew not found. Skipping Google Cloud SDK installation." >&2
+        return 1
+      fi
+      ;;
+    MINGW*|MSYS*|CYGWIN*)
+      # Windows (Git Bash / MSYS / Cygwin 経由)
+      echo "Detected Windows. Installing via winget..."
+      powershell.exe -NoProfile -Command "winget install --id Google.CloudSDK -e --source winget" || return 1
+      ;;
+    *)
+      # Linux (WSL含む)
+      if command -v apt-get >/dev/null 2>&1; then
+        echo "Detected Linux (apt). Installing via official apt repository..."
+        sudo apt-get install -y apt-transport-https ca-certificates gnupg curl \
+          && curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg \
+          && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list > /dev/null \
+          && sudo apt-get update -q \
+          && sudo apt-get install -y google-cloud-cli || return 1
+      else
+        echo "Detected Linux. Installing via official install script..."
+        curl -fsSL https://sdk.cloud.google.com | bash || return 1
+      fi
+      ;;
+  esac
+
+  echo "Google Cloud SDK installed successfully"
+}
+
 install_homebrew
 update_git
 install_mise
 install_claude_code
 install_aws_cli
 install_github_cli
+install_gcloud_cli
 link_to_homedir
 link_config_directories
 link_local_bin
