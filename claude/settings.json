@@ -1,12 +1,24 @@
 {
   "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ \"$(uname)\" = \"Darwin\" ]; then afplay /System/Library/Sounds/Ping.aiff & osascript -e 'display notification \"許可の確認待ちです\" with title \"Claude Code\"'; else powershell.exe -Command \"Add-Type -AssemblyName System.Windows.Forms; \\$notify = New-Object System.Windows.Forms.NotifyIcon; \\$notify.Icon = [System.Drawing.SystemIcons]::Information; \\$notify.Visible = \\$true; \\$notify.ShowBalloonTip(5000, 'Claude Code', '許可の確認待ちです', [System.Windows.Forms.ToolTipIcon]::Info); Start-Sleep -Seconds 3\"; fi",
+            "async": true
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -Command \"Add-Type -AssemblyName System.Windows.Forms; \\$notify = New-Object System.Windows.Forms.NotifyIcon; \\$notify.Icon = [System.Drawing.SystemIcons]::Information; \\$notify.Visible = \\$true; \\$notify.ShowBalloonTip(5000, 'Claude Code', '作業が完了しました', [System.Windows.Forms.ToolTipIcon]::Info); Start-Sleep -Seconds 3\"",
+            "command": "if [ \"$(uname)\" = \"Darwin\" ]; then afplay /System/Library/Sounds/Blow.aiff & osascript -e 'display notification \"作業が完了しました\" with title \"Claude Code\"'; else powershell.exe -Command \"Add-Type -AssemblyName System.Windows.Forms; \\$notify = New-Object System.Windows.Forms.NotifyIcon; \\$notify.Icon = [System.Drawing.SystemIcons]::Information; \\$notify.Visible = \\$true; \\$notify.ShowBalloonTip(5000, 'Claude Code', '作業が完了しました', [System.Windows.Forms.ToolTipIcon]::Info); Start-Sleep -Seconds 3\"; fi",
             "async": true
           }
         ]
@@ -26,5 +38,6 @@
   "language": "関西弁",
   "effortLevel": "high",
   "tui": "fullscreen",
-  "theme": "dark"
+  "theme": "dark",
+  "model": "claude-fable-5[1m]"
 }
