@@ -53,7 +53,7 @@ autoload -Uz colors && colors
 
 # プロンプトのカスタマイズ
 setopt PROMPT_SUBST
-PROMPT='%{$fg[green]%}%n@%m%{$reset_color%}:%{$fg[blue]%}%~%{$reset_color%}$ '
+PROMPT='%{$fg[green]%}%n%{$reset_color%}:%{$fg[blue]%}%~%{$reset_color%}$ '
 # pnpm
 export PNPM_HOME="/Users/tk/Library/pnpm"
 case ":$PATH:" in
