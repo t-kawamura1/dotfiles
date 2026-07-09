@@ -214,6 +214,25 @@ install_mise() {
   echo "mise installed successfully to $HOME/.local/bin/mise"
 }
 
+install_pnpm() {
+  if command -v pnpm >/dev/null 2>&1; then
+    echo "pnpm is already installed: $(pnpm --version)"
+    return
+  fi
+
+  echo "Installing pnpm..."
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL https://get.pnpm.io/install.sh | sh - || return 1
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO- https://get.pnpm.io/install.sh | sh - || return 1
+  else
+    echo "Neither curl nor wget is available. Please install one of them and rerun install.sh." >&2
+    return 1
+  fi
+
+  echo "pnpm installed successfully"
+}
+
 install_claude_code() {
   if command -v claude >/dev/null 2>&1; then
     echo "Claude Code is already installed: $(claude --version)"
@@ -390,6 +409,7 @@ install_gcloud_cli() {
 install_homebrew
 update_git
 install_mise
+install_pnpm
 install_claude_code
 install_aws_cli
 install_github_cli
