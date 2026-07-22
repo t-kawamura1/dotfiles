@@ -406,8 +406,61 @@ install_gcloud_cli() {
   echo "Google Cloud SDK installed successfully"
 }
 
+install_1password_cli() {
+  if command -v op >/dev/null 2>&1; then
+    echo "1Password CLI is already installed: $(op --version)"
+    return
+  fi
+
+  echo "Installing 1Password CLI..."
+  case "$(uname -s)" in
+    Darwin*)
+      # macOS
+      if command -v brew >/dev/null 2>&1; then
+        echo "Detected macOS. Installing via Homebrew..."
+        brew install --cask 1password-cli || return 1
+      else
+        echo "Homebrew not found. Skipping 1Password CLI installation." >&2
+        return 1
+      fi
+      ;;
+    MINGW*|MSYS*|CYGWIN*)
+      # Windows (Git Bash / MSYS / Cygwin 経由)
+      echo "Detected Windows. Installing via winget..."
+      powershell.exe -NoProfile -Command "winget install --id AgileBits.1Password.CLI -e --source winget" || return 1
+      ;;
+    *)
+      # Linux (WSL含む)
+      if command -v apt-get >/dev/null 2>&1; then
+        echo "Detected Linux (apt). Installing via official apt repository..."
+        local arch
+        case "$(uname -m)" in
+          x86_64) arch="amd64" ;;
+          aarch64|arm64) arch="arm64" ;;
+          *) echo "Unsupported architecture: $(uname -m)" >&2; return 1 ;;
+        esac
+        sudo mkdir -p /usr/share/keyrings \
+          && curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg \
+          && echo "deb [arch=${arch} signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/${arch} stable main" | sudo tee /etc/apt/sources.list.d/1password.list > /dev/null \
+          && sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/ \
+          && curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol > /dev/null \
+          && sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22 \
+          && curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg \
+          && sudo apt-get update -q \
+          && sudo apt-get install -y 1password-cli || return 1
+      else
+        echo "No supported package manager found. Skipping 1Password CLI installation." >&2
+        return 1
+      fi
+      ;;
+  esac
+
+  echo "1Password CLI installed successfully"
+}
+
 install_homebrew
 update_git
+install_1password_cli
 install_mise
 install_pnpm
 install_claude_code
